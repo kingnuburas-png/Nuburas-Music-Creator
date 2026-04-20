@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuburas Music Creator</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --card2:#1f2937;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --accent:#22c55e;
+      --accent2:#38bdf8;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#020617,#0f172a);
+      color:var(--text);
+      min-height:100vh;
+      padding:20px;
+    }
+    .app{
+      max-width:760px;
+      margin:0 auto;
+    }
+    .card{
+      background:rgba(17,24,39,.95);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      margin-bottom:16px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+    }
+    p{
+      color:var(--muted);
+      line-height:1.5;
+    }
+    textarea, input, select{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0b1220;
+      color:var(--text);
+      font-size:16px;
+      margin-top:8px;
+      margin-bottom:14px;
+    }
+    textarea{min-height:180px; resize:vertical}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .btns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+    button{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      font-size:15px;
+      cursor:pointer;
+      color:white;
+      background:var(--card2);
+    }
+    button.primary{background:var(--accent); color:#052e16; font-weight:bold;}
+    button.info{background:var(--accent2); color:#082f49; font-weight:bold;}
+    button.danger{background:var(--danger);}
+    .small{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .result{
+      white-space:pre-wrap;
+      background:#0b1220;
+      border-radius:14px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.08);
+      min-height:80px;
+    }
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0b1220;
+      color:#93c5fd;
+      font-size:12px;
+      margin-right:6px;
+      margin-bottom:6px;
+      border:1px solid rgba(147,197,253,.2);
+    }
+    a{
+      color:#93c5fd;
+    }
+    @media (max-width:640px){
+      .grid{grid-template-columns:1fr}
+      h1{font-size:24px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <h1>🎵 Nuburas Music Creator</h1>
+      <p>Wannan karamin app ne da zaka iya amfani da shi a waya domin rubuta waka da Hausa, sauraron ta da murya, adana rubutu, sannan ka kwafe ta zuwa Voloco ko CapCut.</p>
+      <div>
+        <span class="tag">Hausa Lyrics</span>
+        <span class="tag">Murya (TTS)</span>
+        <span class="tag">Ajiye Rubutu</span>
+        <span class="tag">Offline Save</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Take / Sunan waka</label>
+      <input id="title" placeholder="Misali: Soyayya ta gaskiya" />
+
+      <label>Salon waka</label>
+      <select id="style">
+        <option>Love</option>
+        <option>Nishadi</option>
+        <option>Addini</option>
+        <option>Rayuwa</option>
+        <option>Zazzafar waka</option>
+      </select>
+
+      <label>Rubuta waka ko danna “Kirkiri sample”</label>
+      <textarea id="lyrics" placeholder="Rubuta wakarka a nan..."></textarea>
+
+      <div class="btns">
+        <button class="primary" onclick="generateSample()">✨ Kirkiri sample</button>
+        <button class="info" onclick="speakLyrics()">🔊 Karanta da murya</button>
+        <button onclick="pauseSpeech()">⏸ Tsaya</button>
+        <button onclick="resumeSpeech()">▶ Ci gaba</button>
+        <button onclick="saveSong()">💾 Ajiye</button>
+        <button onclick="copySong()">📋 Kwafe</button>
+        <button class="danger" onclick="clearAll()">🗑 Goge</button>
+      </div>
+      <p class="small">Lura: murya tana amfani da murya da browser/waya ta bayar. Ingancin murya yana danganta da wayarka da browser.</p>
+    </div>
+
+    <div class="card">
+      <h2>Abin da aka ajiye</h2>
+      <div id="savedList" class="result">Babu abin da aka ajiye tukuna.</div>
+    </div>
+
+    <div class="card">
+      <h2>Yadda zaka yi amfani da shi</h2>
+      <p>1. Rubuta waka ko ka danna <b>Kirkiri sample</b>.<br>
+      2. Danna <b>Karanta da murya</b> domin jin ta.<br>
+      3. Danna <b>Ajiye</b> domin adana ta a wayarka (a browser).<br>
+      4. Danna <b>Kwafe</b> ka manna cikin Voloco, CapCut, ko wani app.</p>
+      <p class="small">Domin saka shi a wayarka kamar app: bude file din a Chrome, sai ka zabi <b>Add to Home Screen</b>.</p>
+    </div>
+  </div>
+
+  <script>
+    const titleEl = document.getElementById('title');
+    const styleEl = document.getElementById('style');
+    const lyricsEl = document.getElementById('lyrics');
+    const savedListEl = document.getElementById('savedList');
+
+    function generateSample(){
+      const title = titleEl.value.trim() || "Sabuwar Waka";
+      const style = styleEl.value;
+      let sample = "";
+      if(style === "Love"){
+        sample = `${title}\n\n[Verse 1]\nKe ce hasken raina, ke ce annurin zuciya,\nIdan kina kusa da ni, sai na manta da damuwa.\n\n[Chorus]\nSoyayya ta gaskiya, ke ce mafarkin zuciya,\nDuk inda kika nufa, ni zan biyo da godiya.`;
+      } else if(style === "Nishadi"){
+        sample = `${title}\n\n[Verse 1]\nYau rana ta yi kyau, mu tashi mu yi rawa,\nKida na bugawa, farin ciki ya mamaye mu.\n\n[Chorus]\nNishadi yau dai, mu yi ta murna,\nDariya da annashuwa su cika gari.`;
+      } else if(style === "Addini"){
+        sample = `${title}\n\n[Verse 1]\nYa Allah ka shirye mu, ka sa mu bi hanya madaidaiciya,\nKa cika zukatanmu da haske da imani.\n\n[Chorus]\nMun dogara gare Ka, Kai ne Mai rahama,\nKa albarkaci rayuwarmu da zaman lafiya.`;
+      } else if(style === "Rayuwa"){
+        sample = `${title}\n\n[Verse 1]\nRayuwa darasi ce, kullum tana koya mana,\nJuriya da hakuri su ne matakan nasara.\n\n[Chorus]\nMu ci gaba da kokari, ko da hanya ta yi nisa,\nRana daya sai buri ya zama gaskiya.`;
+      } else {
+        sample = `${title}\n\n[Verse 1]\nNa tashi da karfi, zuciyata cike da wuta,\nBa zan ja baya ba, sai na kai inda nake so.\n\n[Chorus]\nKa ji sautina, ka san na zo da gaske,\nMatashi mai buri, ba ya tsoron kalubale.`;
+      }
+      lyricsEl.value = sample;
+    }
+
+    function speakLyrics(){
+      const text = lyricsEl.value.trim();
+      if(!text){
+        alert("Da farko ka rubuta waka ko ka kirkiri sample.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ha-NG";
+      utter.rate = 0.95;
+      utter.pitch = 1;
+      speechSynthesis.speak(utter);
+    }
+
+    function pauseSpeech(){
+      speechSynthesis.pause();
+    }
+
+    function resumeSpeech(){
+      speechSynthesis.resume();
+    }
+
+    function saveSong(){
+      const title = titleEl.value.trim() || "Ba a sa take ba";
+      const lyrics = lyricsEl.value.trim();
+      if(!lyrics){
+        alert("Babu waka da za a ajiye.");
+        return;
+      }
+      const current = JSON.parse(localStorage.getItem('nuburas_songs') || '[]');
+      current.unshift({
+        title,
+        style: styleEl.value,
+        lyrics,
+        date: new Date().toLocaleString()
+      });
+      localStorage.setItem('nuburas_songs', JSON.stringify(current.slice(0, 10)));
+      renderSaved();
+      alert("An ajiye wakar.");
+    }
+
+    function renderSaved(){
+      const current = JSON.parse(localStorage.getItem('nuburas_songs') || '[]');
+      if(!current.length){
+        savedListEl.textContent = "Babu abin da aka ajiye tukuna.";
+        return;
+      }
+      savedListEl.innerHTML = current.map((item, i) => 
+        `<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)">
+          <b>${i+1}. ${escapeHtml(item.title)}</b> <span class="small">(${escapeHtml(item.style)})</span><br>
+          <span class="small">${escapeHtml(item.date)}</span>
+          <div style="margin-top:8px">${escapeHtml(item.lyrics).replace(/\n/g,'<br>')}</div>
+        </div>`
+      ).join('');
+    }
+
+    function copySong(){
+      const text = lyricsEl.value.trim();
+      if(!text){
+        alert("Babu rubutu da za a kwafe.");
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        alert("An kwafe wakar.");
+      }).catch(() => {
+        alert("An kasa kwafe. Ka yi copy da hannu.");
+      });
+    }
+
+    function clearAll(){
+      if(confirm("Kana son goge rubutun da ke nan?")){
+        titleEl.value = "";
+        lyricsEl.value = "";
+      }
+    }
+
+    function escapeHtml(text){
+      return text
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    renderSaved();
+  </script>
+</body>
+</html>

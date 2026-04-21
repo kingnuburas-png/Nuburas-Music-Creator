@@ -1,118 +1,592 @@
 <!DOCTYPE html>
-<html>
+<html lang="ha">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nuburas Studio</title>
-
-<style>
-body{
-  background:#0f172a;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-  padding:15px;
-}
-h1{font-size:28px;}
-textarea{
-  width:90%;
-  height:120px;
-  margin:10px;
-}
-button{
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-}
-.pad{
-  width:80px;
-  height:80px;
-  background:#22c55e;
-  display:inline-block;
-}
-.red{background:#ef4444;}
-.blue{background:#3b82f6;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Nuburas Studio Pro</title>
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#08111f;
+      color:#fff;
+    }
+    .app{
+      min-height:100vh;
+      background:linear-gradient(180deg,#020617,#0f172a 45%,#111827);
+      display:flex;
+      flex-direction:column;
+    }
+    .header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:16px;
+      background:rgba(8,17,31,.95);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(10px);
+    }
+    .toprow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#f59e0b,#facc15);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      box-shadow:0 8px 20px rgba(0,0,0,.25);
+    }
+    .brand h1{
+      margin:0;
+      font-size:21px;
+    }
+    .brand p{
+      margin:4px 0 0;
+      font-size:12px;
+      color:#94a3b8;
+    }
+    .install-btn{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:#16a34a;
+      color:#fff;
+      font-weight:bold;
+      font-size:13px;
+    }
+    .content{
+      padding:16px;
+      display:grid;
+      gap:16px;
+      flex:1;
+    }
+    .card{
+      background:rgba(17,24,39,.96);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 10px 28px rgba(0,0,0,.22);
+    }
+    .card h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+    textarea{
+      width:100%;
+      min-height:170px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:14px;
+      font-size:16px;
+      background:#09101d;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 15px;
+      font-size:15px;
+      font-weight:bold;
+      color:white;
+      cursor:pointer;
+      background:#1f2937;
+    }
+    .green{background:#16a34a;}
+    .blue{background:#2563eb;}
+    .red{background:#dc2626;}
+    .purple{background:#7c3aed;}
+    .dark{background:#374151;}
+    .orange{background:#ea580c;}
+    .active{
+      outline:3px solid #fff;
+      transform:scale(1.02);
+    }
+    .pads{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .pad{
+      height:88px;
+      border-radius:18px;
+      font-size:18px;
+      font-weight:bold;
+      box-shadow:inset 0 -6px 0 rgba(0,0,0,.18);
+    }
+    .pad1{background:linear-gradient(135deg,#22c55e,#16a34a);}
+    .pad2{background:linear-gradient(135deg,#ef4444,#dc2626);}
+    .pad3{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+    .pad4{background:linear-gradient(135deg,#f59e0b,#d97706);}
+    .slider-wrap{
+      margin-top:14px;
+    }
+    .label-row{
+      display:flex;
+      justify-content:space-between;
+      font-size:14px;
+      color:#cbd5e1;
+      margin-bottom:8px;
+    }
+    input[type="range"]{
+      width:100%;
+    }
+    .status, .audio-box{
+      margin-top:14px;
+      background:#09101d;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:12px;
+      color:#cbd5e1;
+      font-size:14px;
+    }
+    audio{
+      width:100%;
+      margin-top:10px;
+    }
+    .footer{
+      position:sticky;
+      bottom:0;
+      padding:12px 10px calc(12px + env(safe-area-inset-bottom));
+      display:flex;
+      justify-content:space-around;
+      gap:10px;
+      background:rgba(8,17,31,.96);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .nav{
+      background:#111827;
+      border-radius:14px;
+      padding:10px 12px;
+      color:#cbd5e1;
+      font-size:13px;
+      border:none;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <div class="header">
+      <div class="toprow">
+        <div class="brand">
+          <div class="logo">👑</div>
+          <div>
+            <h1>Nuburas Studio Pro</h1>
+            <p>Nuburas King Music App</p>
+          </div>
+        </div>
+        <button class="install-btn" id="installBtn" style="display:none;">Install</button>
+      </div>
+    </div>
 
-<h1>🎧 Nuburas Studio</h1>
+    <div class="content">
+      <div class="card">
+        <h2>Lyrics Studio</h2>
+        <textarea id="text" placeholder="Rubuta wakarka a nan..."></textarea>
 
-<textarea id="text" placeholder="Rubuta waka..."></textarea><br>
+        <div class="controls">
+          <button class="blue" onclick="sample()">✨ Sample</button>
+          <button class="green" onclick="speak()">🔊 Play Voice</button>
+          <button class="red" onclick="stopSpeak()">⛔ Stop Voice</button>
+          <button class="purple" onclick="saveText()">💾 Save</button>
+          <button class="dark" onclick="clearText()">🗑 Clear</button>
+        </div>
 
-<button onclick="speak()">🔊 Play Voice</button>
-<button onclick="stop()">⛔ Stop</button>
+        <div class="slider-wrap">
+          <div class="label-row">
+            <span>Voice Speed</span>
+            <span id="speedValue">1</span>
+          </div>
+          <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+        </div>
 
-<h3>🎹 Beat Pads</h3>
+        <div class="status" id="voiceStatus">Status: a shirye</div>
+      </div>
 
-<button class="pad" onclick="kick()">Kick</button>
-<button class="pad red" onclick="snare()">Snare</button>
-<button class="pad blue" onclick="hat()">Hi-Hat</button>
+      <div class="card">
+        <h2>Beat Studio</h2>
 
-<h3>🎤 Record</h3>
-<button onclick="startRec()">Start</button>
-<button onclick="stopRec()">Stop</button>
+        <div class="controls">
+          <button id="hiphopBtn" class="blue active" onclick="setBeatType('hiphop')">Hip Hop</button>
+          <button id="loveBtn" class="purple" onclick="setBeatType('love')">Love</button>
+          <button id="afroBtn" class="orange" onclick="setBeatType('afro')">Afro</button>
+        </div>
 
-<script>
-let recognition;
+        <div class="controls">
+          <button class="blue" onclick="startBeat()">▶️ Play Beat</button>
+          <button class="red" onclick="stopBeat()">⏹ Stop Beat</button>
+        </div>
 
-function speak(){
- let text=document.getElementById("text").value;
- let s=new SpeechSynthesisUtterance(text);
- speechSynthesis.speak(s);
-}
+        <div class="pads">
+          <button class="pad pad1" onclick="kick()">Kick</button>
+          <button class="pad pad2" onclick="snare()">Snare</button>
+          <button class="pad pad3" onclick="hat()">Hi-Hat</button>
+          <button class="pad pad4" onclick="clap()">Clap</button>
+        </div>
 
-function stop(){
- speechSynthesis.cancel();
-}
+        <div class="slider-wrap">
+          <div class="label-row">
+            <span>Tempo</span>
+            <span id="tempoValue">92 BPM</span>
+          </div>
+          <input type="range" id="tempo" min="70" max="140" step="1" value="92">
+        </div>
 
-function kick(){
- let ctx=new AudioContext();
- let o=ctx.createOscillator();
- let g=ctx.createGain();
- o.frequency.value=100;
- o.connect(g);
- g.connect(ctx.destination);
- o.start();
- g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);
-}
+        <div class="status" id="beatStatus">Beat: a tsaye</div>
+      </div>
 
-function snare(){
- let ctx=new AudioContext();
- let noise=ctx.createBufferSource();
- let buffer=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
- let data=buffer.getChannelData(0);
- for(let i=0;i<data.length;i++){data[i]=Math.random();}
- noise.buffer=buffer;
- noise.connect(ctx.destination);
- noise.start();
-}
+      <div class="card">
+        <h2>Audio Recording</h2>
+        <div class="controls">
+          <button class="dark" onclick="startAudioRecord()">🎤 Start Rec</button>
+          <button class="red" onclick="stopAudioRecord()">⏹ Stop Rec</button>
+          <button class="blue" onclick="downloadRecording()">📥 Download Audio</button>
+        </div>
 
-function hat(){
- let ctx=new AudioContext();
- let o=ctx.createOscillator();
- o.frequency.value=8000;
- o.connect(ctx.destination);
- o.start();
- o.stop(ctx.currentTime+0.05);
-}
+        <div class="audio-box">
+          <div id="recordStatus">Recording: a tsaye</div>
+          <audio id="audioPlayback" controls></audio>
+        </div>
+      </div>
+    </div>
 
-function startRec(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){alert("Ba ya aiki a wayarka"); return;}
- recognition=new SR();
- recognition.start();
- recognition.onresult=(e)=>{
-  document.getElementById("text").value+=e.results[0][0].transcript;
- }
-}
+    <div class="footer">
+      <button class="nav">🏠 Home</button>
+      <button class="nav">🎵 Studio</button>
+      <button class="nav">🎤 Record</button>
+      <button class="nav">⚙️ Settings</button>
+    </div>
+  </div>
 
-function stopRec(){
- if(recognition) recognition.stop();
-}
-</script>
+  <script>
+    let ctx;
+    let beatInterval = null;
+    let currentStep = 0;
+    let currentBeatType = "hiphop";
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
+    let audioUrl = "";
+    let deferredPrompt = null;
 
+    const speed = document.getElementById("speed");
+    const speedValue = document.getElementById("speedValue");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const beatStatus = document.getElementById("beatStatus");
+    const tempo = document.getElementById("tempo");
+    const tempoValue = document.getElementById("tempoValue");
+    const recordStatus = document.getElementById("recordStatus");
+    const audioPlayback = document.getElementById("audioPlayback");
+    const installBtn = document.getElementById("installBtn");
+
+    speed.oninput = () => speedValue.textContent = speed.value;
+
+    tempo.oninput = () => {
+      tempoValue.textContent = tempo.value + " BPM";
+      if (beatInterval) {
+        stopBeat();
+        startBeat();
+      }
+    };
+
+    function setBeatType(type){
+      currentBeatType = type;
+      document.getElementById("hiphopBtn").classList.remove("active");
+      document.getElementById("loveBtn").classList.remove("active");
+      document.getElementById("afroBtn").classList.remove("active");
+
+      if(type === "hiphop") document.getElementById("hiphopBtn").classList.add("active");
+      if(type === "love") document.getElementById("loveBtn").classList.add("active");
+      if(type === "afro") document.getElementById("afroBtn").classList.add("active");
+
+      beatStatus.textContent = "Beat type: " + type;
+
+      if (beatInterval) {
+        stopBeat();
+        startBeat();
+      }
+    }
+
+    function sample(){
+      document.getElementById("text").value =
+`[Verse 1]
+Nuburas King yana kan beat,
+Yana hawa sama cikin heat,
+Studio dina ya cika da sauti,
+Yanzu lokaci ne na quality.`;
+      voiceStatus.textContent = "Status: an saka sample";
+    }
+
+    function speak(){
+      const t = document.getElementById("text").value.trim();
+      if(!t){
+        alert("Ka fara rubuta waka.");
+        return;
+      }
+      speechSynthesis.cancel();
+      const s = new SpeechSynthesisUtterance(t);
+      s.rate = parseFloat(speed.value);
+      s.lang = "en-US";
+      voiceStatus.textContent = "Status: murya tana aiki";
+      s.onend = () => voiceStatus.textContent = "Status: an gama";
+      speechSynthesis.speak(s);
+    }
+
+    function stopSpeak(){
+      speechSynthesis.cancel();
+      voiceStatus.textContent = "Status: an tsayar";
+    }
+
+    function saveText(){
+      localStorage.setItem("nuburas_text", document.getElementById("text").value);
+      voiceStatus.textContent = "Status: an ajiye";
+      alert("An adana rubutu.");
+    }
+
+    function clearText(){
+      document.getElementById("text").value = "";
+      voiceStatus.textContent = "Status: an goge";
+    }
+
+    function ensureAudio(){
+      if(!ctx){
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if(ctx.state === "suspended"){
+        ctx.resume();
+      }
+    }
+
+    function kick(){
+      ensureAudio();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+      gain.gain.setValueAtTime(1, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    }
+
+    function snare(){
+      ensureAudio();
+      const now = ctx.currentTime;
+      const bufferSize = ctx.sampleRate * 0.2;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for(let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.value = 1500;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.7, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.12);
+    }
+
+    function hat(){
+      ensureAudio();
+      const now = ctx.currentTime;
+      const bufferSize = ctx.sampleRate * 0.04;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for(let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.value = 7000;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.22, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.03);
+    }
+
+    function clap(){
+      ensureAudio();
+      const now = ctx.currentTime;
+      for(let n = 0; n < 3; n++){
+        const bufferSize = ctx.sampleRate * 0.03;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = buffer.getChannelData(0);
+        for(let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.value = 1800;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.4, now + n * 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + n * 0.02 + 0.04);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now + n * 0.02);
+        noise.stop(now + n * 0.02 + 0.04);
+      }
+    }
+
+    function playHipHop(step){
+      if(step === 0){ kick(); hat(); }
+      if(step === 1){ hat(); }
+      if(step === 2){ snare(); hat(); }
+      if(step === 3){ hat(); }
+      if(step === 4){ kick(); hat(); }
+      if(step === 5){ clap(); hat(); }
+      if(step === 6){ snare(); hat(); }
+      if(step === 7){ hat(); }
+    }
+
+    function playLove(step){
+      if(step === 0){ kick(); }
+      if(step === 1){ hat(); }
+      if(step === 2){ clap(); }
+      if(step === 3){ hat(); }
+      if(step === 4){ kick(); }
+      if(step === 5){ hat(); }
+      if(step === 6){ snare(); }
+      if(step === 7){ hat(); }
+    }
+
+    function playAfro(step){
+      if(step === 0){ kick(); hat(); }
+      if(step === 1){ clap(); }
+      if(step === 2){ hat(); }
+      if(step === 3){ snare(); }
+      if(step === 4){ kick(); hat(); }
+      if(step === 5){ hat(); clap(); }
+      if(step === 6){ snare(); }
+      if(step === 7){ hat(); }
+    }
+
+    function startBeat(){
+      stopBeat();
+      ensureAudio();
+      currentStep = 0;
+      const bpm = parseInt(tempo.value, 10);
+      const stepMs = (60000 / bpm) / 2;
+      beatStatus.textContent = "Beat: yana kunne - " + currentBeatType;
+      beatInterval = setInterval(() => {
+        if(currentBeatType === "hiphop") playHipHop(currentStep);
+        if(currentBeatType === "love") playLove(currentStep);
+        if(currentBeatType === "afro") playAfro(currentStep);
+        currentStep = (currentStep + 1) % 8;
+      }, stepMs);
+    }
+
+    function stopBeat(){
+      if(beatInterval){
+        clearInterval(beatInterval);
+        beatInterval = null;
+      }
+      beatStatus.textContent = "Beat: a tsaye";
+    }
+
+    async function startAudioRecord(){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if(event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+          if(audioUrl) URL.revokeObjectURL(audioUrl);
+          audioUrl = URL.createObjectURL(audioBlob);
+          audioPlayback.src = audioUrl;
+          recordStatus.textContent = "Recording: an gama";
+        };
+
+        mediaRecorder.start();
+        recordStatus.textContent = "Recording: yana aiki";
+      } catch (err){
+        recordStatus.textContent = "Recording: bai yi aiki ba";
+        alert("Ka bada microphone permission a Chrome.");
+      }
+    }
+
+    function stopAudioRecord(){
+      if(mediaRecorder && mediaRecorder.state !== "inactive"){
+        mediaRecorder.stop();
+        recordStatus.textContent = "Recording: ana gamawa...";
+      }
+    }
+
+    function downloadRecording(){
+      if(!audioBlob){
+        alert("Babu recorded audio tukuna.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = audioUrl;
+      a.download = "nuburas_recording.webm";
+      a.click();
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem("nuburas_text");
+      if(saved) document.getElementById("text").value = saved;
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  </script>
 </body>
-</html>
+    </html>

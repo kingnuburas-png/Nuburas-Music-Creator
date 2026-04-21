@@ -1,1 +1,27 @@
-# Nuburas-Music-Creator
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nuburas Music Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="text-align:center; font-family:Arial; background:#111; color:white;">
+
+  <h1>🎵 Nuburas Music Creator</h1>
+
+  <textarea id="text" placeholder="Rubuta wakarka..." style="width:90%;height:150px;"></textarea><br><br>
+
+  <button onclick="speak()">🔊 Karanta</button>
+
+  <script>
+    function speak(){
+      let text = document.getElementById("text").value;
+      let speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-US";
+      speech.rate = 0.9;
+      speechSynthesis.speak(speech);
+    }
+  </script>
+
+</body>
+</html>

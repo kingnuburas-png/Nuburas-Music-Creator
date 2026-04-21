@@ -1,27 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Nuburas Music Creator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuburas Studio</title>
+
+<style>
+body{
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  padding:15px;
+}
+h1{font-size:28px;}
+textarea{
+  width:90%;
+  height:120px;
+  margin:10px;
+}
+button{
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+}
+.pad{
+  width:80px;
+  height:80px;
+  background:#22c55e;
+  display:inline-block;
+}
+.red{background:#ef4444;}
+.blue{background:#3b82f6;}
+</style>
 </head>
 
-<body style="text-align:center; font-family:Arial; background:#111; color:white;">
+<body>
 
-  <h1>🎵 Nuburas Music Creator</h1>
+<h1>🎧 Nuburas Studio</h1>
 
-  <textarea id="text" placeholder="Rubuta wakarka..." style="width:90%;height:150px;"></textarea><br><br>
+<textarea id="text" placeholder="Rubuta waka..."></textarea><br>
 
-  <button onclick="speak()">🔊 Karanta</button>
+<button onclick="speak()">🔊 Play Voice</button>
+<button onclick="stop()">⛔ Stop</button>
 
-  <script>
-    function speak(){
-      let text = document.getElementById("text").value;
-      let speech = new SpeechSynthesisUtterance(text);
-      speech.lang = "en-US";
-      speech.rate = 0.9;
-      speechSynthesis.speak(speech);
-    }
-  </script>
+<h3>🎹 Beat Pads</h3>
+
+<button class="pad" onclick="kick()">Kick</button>
+<button class="pad red" onclick="snare()">Snare</button>
+<button class="pad blue" onclick="hat()">Hi-Hat</button>
+
+<h3>🎤 Record</h3>
+<button onclick="startRec()">Start</button>
+<button onclick="stopRec()">Stop</button>
+
+<script>
+let recognition;
+
+function speak(){
+ let text=document.getElementById("text").value;
+ let s=new SpeechSynthesisUtterance(text);
+ speechSynthesis.speak(s);
+}
+
+function stop(){
+ speechSynthesis.cancel();
+}
+
+function kick(){
+ let ctx=new AudioContext();
+ let o=ctx.createOscillator();
+ let g=ctx.createGain();
+ o.frequency.value=100;
+ o.connect(g);
+ g.connect(ctx.destination);
+ o.start();
+ g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);
+}
+
+function snare(){
+ let ctx=new AudioContext();
+ let noise=ctx.createBufferSource();
+ let buffer=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
+ let data=buffer.getChannelData(0);
+ for(let i=0;i<data.length;i++){data[i]=Math.random();}
+ noise.buffer=buffer;
+ noise.connect(ctx.destination);
+ noise.start();
+}
+
+function hat(){
+ let ctx=new AudioContext();
+ let o=ctx.createOscillator();
+ o.frequency.value=8000;
+ o.connect(ctx.destination);
+ o.start();
+ o.stop(ctx.currentTime+0.05);
+}
+
+function startRec(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert("Ba ya aiki a wayarka"); return;}
+ recognition=new SR();
+ recognition.start();
+ recognition.onresult=(e)=>{
+  document.getElementById("text").value+=e.results[0][0].transcript;
+ }
+}
+
+function stopRec(){
+ if(recognition) recognition.stop();
+}
+</script>
 
 </body>
 </html>
